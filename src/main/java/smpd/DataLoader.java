@@ -13,8 +13,8 @@ import java.util.Scanner;
  * Created by nuddler on 23.11.16.
  */
 public class DataLoader {
-    public static Double[][] getFeatureMatrixFromFile() throws FileNotFoundException {
-        File file = new File("input.txt");
+    public static List<Sample> getFeatureMatrixFromFile() throws FileNotFoundException {
+        File file = new File("resource/input.txt");
         Scanner br = null;
 
         ArrayList<ArrayList<String>> arrayLists = new ArrayList<ArrayList<String>>();
@@ -30,12 +30,15 @@ public class DataLoader {
             }
         }
 
-        Double[][] doubles = new Double[arrayLists.get(0).size() - 1][arrayLists.size()];
-        for (int i = 0; i < arrayLists.size(); i++) {
-            for (int j = 0; j <= arrayLists.get(0).size(); j++) {
-                doubles[i][j] = Double.valueOf(arrayLists.get(i).get(j+1));
+        List<Sample> samples = new ArrayList<Sample>();
+        for (ArrayList<String> arrayList : arrayLists) {
+            Sample sample = new Sample();
+            sample.setClassName(arrayList.get(0));
+            for (int j = 0; j < arrayLists.get(0).size() - 1; j++) {
+                sample.getFeatureList().add(Double.valueOf(arrayList.get(j + 1)));
             }
+            samples.add(sample);
         }
-        return doubles;
+        return samples;
     }
 }

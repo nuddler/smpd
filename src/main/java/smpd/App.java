@@ -1,6 +1,7 @@
 package smpd;
 
 import java.io.FileNotFoundException;
+import java.util.List;
 
 /**
  * Hello world!
@@ -8,7 +9,6 @@ import java.io.FileNotFoundException;
 public class App {
     public static void main(String[] args) throws FileNotFoundException {
         System.out.println("Hello World!");
-        Double[][] featureMatrix = DataLoader.getFeatureMatrixFromFile();
-
+        List<Sample> featureMatrix = DataLoader.getFeatureMatrixFromFile();
     }
 }
