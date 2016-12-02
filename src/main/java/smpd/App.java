@@ -57,6 +57,7 @@ public class App {
             double currentFisher = calculateFisher(next, xa, xb, avgA, avgB);
             if (currentFisher > fisher) {
                 bestFeatures = next;
+                fisher = currentFisher;
             }
         }
         return bestFeatures;
@@ -71,8 +72,7 @@ public class App {
         Matrix sA = getSMatrix(pXa, pAvgA);
         Matrix sB = getSMatrix(pXb, pAvgB);
 
-        //TODO: jak tutaj zrobć odległość
-        double minus = pAvgA.minus(pAvgB).norm1();
+        double minus = pAvgA.minus(pAvgB).normF();
 
         double sum = sA.det() + sB.det();
 
