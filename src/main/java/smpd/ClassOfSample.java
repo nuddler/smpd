@@ -23,7 +23,7 @@ public class ClassOfSample {
     private Matrix calculateAverageMatrix(Matrix v2) {
         double[][] doubles = new double[v2.getColumnDimension()][1];
         for (int i = 0; i < v2.getColumnDimension(); i++) {
-            doubles[i][0] = calculateAvg(v2.getArrayCopy()[i]);
+            doubles[i][0] = calculateAvg(v2.transpose().getArray()[i]);
         }
         Matrix avgMatrix = new Matrix(doubles);
         return avgMatrix;
@@ -40,5 +40,29 @@ public class ClassOfSample {
             }
         }
         return avg;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public Matrix getAverageMatrix() {
+        return averageMatrix;
+    }
+
+    public void setAverageMatrix(Matrix averageMatrix) {
+        this.averageMatrix = averageMatrix;
+    }
+
+    public Matrix getSampelMatrix() {
+        return sampelMatrix;
+    }
+
+    public void setSampelMatrix(Matrix sampelMatrix) {
+        this.sampelMatrix = sampelMatrix;
     }
 }

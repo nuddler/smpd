@@ -9,7 +9,7 @@ import java.util.List;
 public class Sample {
 
     public enum ClassName {
-        ACER,QUERCUS;
+        ACER,QUERCUS,A,B;
 
         public static ClassName fromString(String className) {
             if(className == null) {
@@ -22,6 +22,14 @@ public class Sample {
 
             if(className.contains("Quercus")) {
                 return QUERCUS;
+            }
+
+            if(className.equals("a")) {
+                return A;
+            }
+
+            if(className.equals("b")) {
+                return B;
             }
             return null;
         }
