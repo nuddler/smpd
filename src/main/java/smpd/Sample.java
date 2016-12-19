@@ -35,9 +35,11 @@ public class Sample {
         }
     }
 
-    private List<Double> featureList = new ArrayList<Double>();
     private String classNameString;
     private ClassName className;
+
+    private List<Double> featureList = new ArrayList<Double>();
+
 
     public List<Double> getFeatureList() {
         return featureList;
