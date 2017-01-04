@@ -39,30 +39,31 @@ public class NMClassifier extends Classifier {
     }
 
     public double getMahalonobisDistance(Sample sample) {
-        ClassOfSample classOfSample = sample.getClassName() == Sample.ClassName.ACER ? classA : classB;
-        Matrix covarianceMatrix = getCovarianceMatrix(classOfSample);
-        Matrix averageMatrix = classOfSample.getAverageMatrix();
-        double[] featuresArray = getFeaturesArray(sample);
-        double[][] doubles = replicateVectorToMatrix(featuresArray, 1);
-        Matrix X = new Matrix(doubles);
+        Matrix res = null;
+        try {
+            ClassOfSample classOfSample = sample.getClassName() == Sample.ClassName.ACER ? classA : classB;
+            Matrix covarianceMatrix = getCovarianceMatrix(classOfSample);
+            Matrix pCovarianceMatrix = covarianceMatrix.getMatrix(selectedFeatures, selectedFeatures);
+            Matrix averageMatrix = classOfSample.getAverageMatrix();
+            Matrix pAvg = averageMatrix.getMatrix(selectedFeatures, 0, averageMatrix.getColumnDimension() - 1);
+            double[] featuresArray = getFeaturesArray(sample);
+            double[][] doubles = replicateVectorToMatrix(featuresArray, 1);
+            Matrix X = new Matrix(doubles);
 
-        Matrix cz1 = X.minus(averageMatrix).transpose();
-        Matrix cz2 = covarianceMatrix.inverse();
-        Matrix cz3 = X.minus(averageMatrix);
+            Matrix cz1 = X.minus(pAvg).transpose();
+            Matrix cz2 = pCovarianceMatrix.inverse();
+            Matrix cz3 = X.minus(pAvg);
 
-        double result = doMagic(cz1,cz2,cz3);
+            res = cz1.times(cz2).times(cz3);
+        }catch(Exception e){
+            //TODO sysout->log.
+            System.out.println("ex:"+ e.getMessage());
+            return Double.POSITIVE_INFINITY;
+        }
 
-//        X.minus(averageMatrix).times(
-//        covarianceMatrix.inverse()).times
-//                (X.minus(averageMatrix));
-
-        return result;
+        return res.getArray()[0][0];
     }
 
-    private double doMagic(Matrix cz1, Matrix cz2, Matrix cz3) {
-
-        return 0.0;
-    }
 
     public static Matrix getCovarianceMatrix(ClassOfSample classOfSample) {
         double[][] doubles = classOfSample.getSampleMatrix().getArray();
