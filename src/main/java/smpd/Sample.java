@@ -16,19 +16,19 @@ public class Sample {
                 return ACER;
             }
 
-            if(className.contains("Acer")) {
-                return ACER;
-            }
+//            if(className.contains("Acer")) {
+//                return ACER;
+//            }
+//
+//            if(className.contains("Quercus")) {
+//                return QUERCUS;
+//            }
 
-            if(className.contains("Quercus")) {
-                return QUERCUS;
-            }
-
-            if(className.equals("a")) {
+            if(className.equals("a") || className.contains("Acer")) {
                 return A;
             }
 
-            if(className.equals("b")) {
+            if(className.equals("b") || className.contains("Quercus")) {
                 return B;
             }
             return null;

@@ -9,7 +9,7 @@ public class App {
     public static void main(String[] args) throws FileNotFoundException {
 
         FisherSelector fisherSelector = new FisherSelector();
-        int[] bestFeatures = fisherSelector.getBestFeatures(3);
+        int[] bestFeatures = fisherSelector.getBestFeatures(4);
         for (int i : bestFeatures) {
             System.out.println("index : " + i);
         }

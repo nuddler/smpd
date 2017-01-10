@@ -17,8 +17,8 @@ public class FisherSelector {
     public FisherSelector() throws FileNotFoundException {
         List<Sample> wholeMatrixOfSample = DataLoader.getFeatureMatrixFromFile();
 
-        Matrix sampleOfClassAcerMatrix = ClassOfSample.createSampleOfClassMatrix(wholeMatrixOfSample, Sample.ClassName.ACER);
-        Matrix sampleOfClassQuercusMatrix = ClassOfSample.createSampleOfClassMatrix(wholeMatrixOfSample, Sample.ClassName.QUERCUS);
+        Matrix sampleOfClassAcerMatrix = ClassOfSample.createSampleOfClassMatrix(wholeMatrixOfSample, Sample.ClassName.A);
+        Matrix sampleOfClassQuercusMatrix = ClassOfSample.createSampleOfClassMatrix(wholeMatrixOfSample, Sample.ClassName.B);
 
         classA = new ClassOfSample(sampleOfClassAcerMatrix);
         classB = new ClassOfSample(sampleOfClassQuercusMatrix);

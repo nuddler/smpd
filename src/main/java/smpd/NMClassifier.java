@@ -22,8 +22,8 @@ public class NMClassifier extends Classifier {
         super(trainingPartPercent, selectedFeatures);
         List<Sample> wholeMatrixOfSample = DataLoader.getFeatureMatrixFromFile();
 
-        Matrix sampleOfClassAcerMatrix = ClassOfSample.createSampleOfClassMatrix(wholeMatrixOfSample, Sample.ClassName.ACER);
-        Matrix sampleOfClassQuercusMatrix = ClassOfSample.createSampleOfClassMatrix(wholeMatrixOfSample, Sample.ClassName.QUERCUS);
+        Matrix sampleOfClassAcerMatrix = ClassOfSample.createSampleOfClassMatrix(wholeMatrixOfSample, Sample.ClassName.A);
+        Matrix sampleOfClassQuercusMatrix = ClassOfSample.createSampleOfClassMatrix(wholeMatrixOfSample, Sample.ClassName.B);
 
         classA = new ClassOfSample(sampleOfClassAcerMatrix);
         classB = new ClassOfSample(sampleOfClassQuercusMatrix);
@@ -33,15 +33,15 @@ public class NMClassifier extends Classifier {
     @Override
     public Sample.ClassName classify(Sample sample) {
         double class1 = 0, class2 = 0;
-        class1 = getMahalonobisDistance(sample);
-        class2 = getMahalonobisDistance(sample);
-        return class1 < class2 ? Sample.ClassName.ACER : Sample.ClassName.QUERCUS;
+        class1 = getMahalonobisDistance(sample,Sample.ClassName.A);
+        class2 = getMahalonobisDistance(sample,Sample.ClassName.B);
+        return class1 < class2 ? Sample.ClassName.A : Sample.ClassName.B;
     }
 
-    public double getMahalonobisDistance(Sample sample) {
+    public double getMahalonobisDistance(Sample sample, Sample.ClassName className) {
         Matrix res = null;
         try {
-            ClassOfSample classOfSample = sample.getClassName() == Sample.ClassName.ACER ? classA : classB;
+            ClassOfSample classOfSample = className == Sample.ClassName.A ? classA : classB;
             Matrix covarianceMatrix = getCovarianceMatrix(classOfSample);
             Matrix pCovarianceMatrix = covarianceMatrix.getMatrix(selectedFeatures, selectedFeatures);
             Matrix averageMatrix = classOfSample.getAverageMatrix();
@@ -57,7 +57,7 @@ public class NMClassifier extends Classifier {
             res = cz1.times(cz2).times(cz3);
         }catch(Exception e){
             //TODO sysout->log.
-            System.out.println("ex:"+ e.getMessage());
+            //System.out.println("ex:"+ e.getMessage());
             return Double.POSITIVE_INFINITY;
         }
 
