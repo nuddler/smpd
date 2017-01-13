@@ -1,6 +1,8 @@
 package smpd;
 
 import java.io.FileNotFoundException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -29,6 +31,7 @@ public abstract class Classifier {
     public Classifier(int trainingPartPercent, int[] selectedFeatures) throws FileNotFoundException {
         this.selectedFeatures = selectedFeatures;
         List<Sample> featureMatrixFromFile = DataLoader.getFeatureMatrixFromFile();
+        Collections.shuffle(featureMatrixFromFile);
         int index = (int) (featureMatrixFromFile.size() * (trainingPartPercent / 100.0));
         if (featureMatrixFromFile.size() > index) {
             trainingPart = featureMatrixFromFile.subList(0, index);
