@@ -36,7 +36,13 @@ public class HomeController {
     public String classifierPost(Model model, ClassifierDTO classifierDTO) {
 
         String result = null;
-        String error = null;
+        String error = paramsCheck(classifierDTO);
+        if (error != null) {
+            model.addAttribute("error", error);
+            return "classifier";
+        }
+
+        paramsCheck(classifierDTO);
         try {
             FisherSelector fisherSelector = new FisherSelector();
             int[] bestFeatures = fisherSelector.getBestFeatures(classifierDTO.getBestFeaturesCount());
@@ -53,8 +59,8 @@ public class HomeController {
                 case 3:
                     classifier = new NMClassifier(classifierDTO.getLearningPerct(), bestFeatures);
             }
-            double pertence = classifier.doClassificationOnClassifyPart();
-            result = String.valueOf(pertence);
+            double pertence = classifier.doClassificationOnClassifyPart() * 100;
+            result = "Result = " + String.valueOf(pertence) + "%";
         } catch (Exception e) {
             error = e.getMessage();
         }
@@ -64,5 +70,20 @@ public class HomeController {
             model.addAttribute("success", result);
         }
         return "classifier";
+    }
+
+    private String paramsCheck(ClassifierDTO classifierDTO) {
+        if (classifierDTO.getLearningPerct() > 99 || classifierDTO.getLearningPerct() < 1) {
+            return "Learning part in percentages should be between 1 and 100";
+        }
+        int k = classifierDTO.getK();
+        double temp = k % 2;
+        if (temp == 0 && classifierDTO.getClassifierNo() == 2) {
+            return "K should be odd.";
+        }
+        if (classifierDTO.getBestFeaturesCount() < 0) {
+            return "Best features count should be at least 1.";
+        }
+        return null;
     }
 }

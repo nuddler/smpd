@@ -10,14 +10,7 @@
     <div class="container">
         <h1 th:text="#{classifier}"/>
         <form class="form-horizontal" role="form" th:action="@{/classifier}" th:object="${classifierDTO}" method="post">
-            <!--<div class="form-group">-->
-            <!--<label for="classifierNo" class="col-sm-3 control-label" th:text="#{classifier}">classifierNo</label>-->
-            <!--<div class="col-sm-9">-->
-            <!--<input type="text" id="classifierNo" placeholder="" class="form-control" autofocus="true"-->
-            <!--th:field="*{classifierNo}"/>-->
-            <!--&lt;!&ndash;<span class="help-block">Last Name, First Name, eg.: Smith, Harry</span>&ndash;&gt;-->
-            <!--</div>-->
-            <!--</div>-->
+
             <div class="form-group blu-margin">
                 <label for="bestFeaturesCount" class="col-sm-3 control-label"
                        th:text="#{classifier}">bestFeaturesCount</label>
