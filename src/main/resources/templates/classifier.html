@@ -19,9 +19,10 @@
             <!--</div>-->
             <!--</div>-->
             <div class="form-group blu-margin">
-                <label for="bestFeaturesCount" class="col-sm-3 control-label" th:text="#{classifier}">bestFeaturesCount</label>
+                <label for="bestFeaturesCount" class="col-sm-3 control-label"
+                       th:text="#{classifier}">bestFeaturesCount</label>
 
-                <div class="col-sm-9">
+                <div class="col-sm-9" id="classifier">
                     <select class="form-control" th:field="*{classifierNo}" id="classifierNo">
                         <!--<option value="0" th:text="select operator" ></option>-->
                         <option value="1" th:text="NN"></option>
@@ -46,13 +47,13 @@
                            autofocus="false" th:field="*{bestFeaturesCount}"/>
                 </div>
             </div>
-            <!--<div class="form-group">-->
-                <!--<label for="k" class="col-sm-3 control-label" th:text="#{k}">k</label>-->
-                <!--<div class="col-sm-9">-->
-                    <!--<input type="text" id="k" placeholder="" class="form-control"-->
-                           <!--autofocus="false" th:field="*{kForKNN}"/>-->
-                <!--</div>-->
-            <!--</div>-->
+            <div class="form-group" id="kNN" hidden="true">
+                <label for="k" class="col-sm-3 control-label" th:text="#{kForKNN}">k</label>
+                <div class="col-sm-9">
+                    <input type="text" id="k" placeholder="" class="form-control"
+                           autofocus="false" th:field="*{k}"/>
+                </div>
+            </div>
 
             <div class="form-group">
                 <div class="col-sm-9 col-sm-offset-3">
@@ -66,10 +67,16 @@
     </div>
 </div>
 <script>
-    $( "p" ).hide();
-    $( "a" ).click(function( event ) {
-        event.preventDefault();
-        $( this ).hide();
+    $(document).ready(function () {
+        $('#classifierNo').on('change', function () {
+
+            if (this.value == '2') {
+                $("#kNN").show();
+            }
+            else {
+                $("#kNN").hide();
+            }
+        });
     });
 </script>
 </body>
