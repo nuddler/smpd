@@ -1,9 +1,12 @@
 package smpd;
 
 import Jama.Matrix;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.util.CombinatoricsUtils;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -28,7 +31,7 @@ public class FisherSelector {
     public int[] getBestFeatures(int selectedFeatureCount) {
         int featuresCount = classA.getAverageMatrix().getRowDimension();
         Iterator<int[]> iterator = CombinatoricsUtils.combinationsIterator(featuresCount, selectedFeatureCount);
-        int[] bestFeatures = new int[featuresCount];
+        int[] bestFeatures = new int[selectedFeatureCount];
         double fisher = Double.NEGATIVE_INFINITY;
         while (iterator.hasNext()) {
             int[] next = iterator.next();
@@ -39,6 +42,51 @@ public class FisherSelector {
             }
         }
         return bestFeatures;
+    }
+
+    private List<Integer> getBestFeatures(List<Integer> features) {
+        int featuresCount = classA.getAverageMatrix().getRowDimension();
+        double fisher = Double.NEGATIVE_INFINITY;
+        List<Integer> bestFeatures = new ArrayList<Integer>(features);
+        bestFeatures.add(new Integer(0));
+
+        int size = features.size();
+        for (int i = 0; i < featuresCount; i++) {
+            if (!features.contains(new Integer(i))) {
+                setOrAddInList(features, size, i);
+                Integer[] integers = features.toArray(new Integer[features.size()]);
+
+                double currentFisher = calculateFisher(ArrayUtils.toPrimitive(integers));
+                if (currentFisher > fisher) {
+                    Collections.copy(bestFeatures,features);
+                    fisher = currentFisher;
+                }
+            }
+        }
+        return bestFeatures;
+    }
+
+    private void setOrAddInList(List<Integer> features, int size, int i) {
+        if(features.size() > size) {
+            features.set(size, new Integer(i));
+        } else {
+            features.add(size, new Integer(i));
+        }
+    }
+
+    public int[] getBestFeaturesWithSFS(int selectedFeatureCount) {
+        List<Integer> bestFeatures = new ArrayList<Integer>();
+
+        for (int i = 0; i < selectedFeatureCount; i++) {
+            bestFeatures = getBestFeatures(bestFeatures);
+        }
+
+        int[] bestFeaturesArray = new int[bestFeatures.size()];
+        for (int i = 0; i < bestFeatures.size(); i++) {
+            bestFeaturesArray[i] = bestFeatures.get(i); // Watch out for NullPointerExceptions!
+        }
+
+        return bestFeaturesArray;
     }
 
     private double calculateFisher(int[] features) {

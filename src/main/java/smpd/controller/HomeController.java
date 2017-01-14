@@ -46,7 +46,8 @@ public class HomeController {
         paramsCheck(classifierDTO);
         try {
             FisherSelector fisherSelector = new FisherSelector();
-            int[] bestFeatures = fisherSelector.getBestFeatures(classifierDTO.getBestFeaturesCount());
+            //int[] bestFeatures = fisherSelector.getBestFeatures(classifierDTO.getBestFeaturesCount());
+            int[] bestFeatures = fisherSelector.getBestFeaturesWithSFS(classifierDTO.getBestFeaturesCount());
             for (int i : bestFeatures) {
                 System.out.println("index : " + i);
             }
@@ -64,6 +65,7 @@ public class HomeController {
             result += "Result = " + String.valueOf(pertence) + "%";
         } catch (Exception e) {
             error = e.getMessage();
+            e.printStackTrace();
         }
         if (result == null) {
             model.addAttribute("error", error);
