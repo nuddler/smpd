@@ -61,7 +61,7 @@ public class HomeController {
                 case 3:
                     classifier = new NMClassifier(classifierDTO.getLearningPerct(), bestFeatures);
             }
-            double pertence = classifier.doClassificationOnClassifyPart() * 100;
+            double pertence = classifier.doCrossValidation(4) * 100;
             result += "Result = " + String.valueOf(pertence) + "%";
         } catch (Exception e) {
             error = e.getMessage();
