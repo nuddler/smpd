@@ -9,6 +9,7 @@ import smpd.*;
 import smpd.dto.ClassifierDTO;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 
 /**
  * Created by Maciej on 2016-12-27.
@@ -49,7 +50,7 @@ public class HomeController {
             for (int i : bestFeatures) {
                 System.out.println("index : " + i);
             }
-
+                result="Indexes of best features selected by Fisher: " + Arrays.toString(bestFeatures) + " ";
             Classifier classifier = null;
             switch (classifierDTO.getClassifierNo()) {
                 case 1:
@@ -60,7 +61,7 @@ public class HomeController {
                     classifier = new NMClassifier(classifierDTO.getLearningPerct(), bestFeatures);
             }
             double pertence = classifier.doClassificationOnClassifyPart() * 100;
-            result = "Result = " + String.valueOf(pertence) + "%";
+            result += "Result = " + String.valueOf(pertence) + "%";
         } catch (Exception e) {
             error = e.getMessage();
         }
