@@ -7,6 +7,7 @@
 
 <!-- Main jumbotron for a primary marketing message or call to action -->
 <div class="jumbotron">
+    <div th:replace="fisher :: fisherBlock"></div>
     <div class="container">
         <h1 th:text="#{classifier}"/>
         <form class="form-horizontal" role="form" th:action="@{/classifier}" th:object="${classifierDTO}" method="post">
@@ -33,13 +34,6 @@
                            autofocus="false" th:field="*{learningPerct}"/>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="bestFeaturesCount" class="col-sm-3 control-label" th:text="#{bestFeaturesCount}">bestFeaturesCount</label>
-                <div class="col-sm-9">
-                    <input type="text" id="bestFeaturesCount" placeholder="" class="form-control"
-                           autofocus="false" th:field="*{bestFeaturesCount}"/>
-                </div>
-            </div>
             <div class="form-group" id="kNN" hidden="true">
                 <label for="k" class="col-sm-3 control-label" th:text="#{kForKNN}">k</label>
                 <div class="col-sm-9">
@@ -63,7 +57,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-sm-9 col-sm-offset-3">
+                <div class="col-sm-9 col-sm-offset-3" th:if="${classyficationEnabled}">
                     <button type="submit" class="btn btn-primary btn-block" th:text="#{classify}" onclick="showModal()">
                     </button>
                 </div>

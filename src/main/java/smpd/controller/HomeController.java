@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import smpd.*;
 import smpd.dto.ClassifierDTO;
+import smpd.dto.FisherDTO;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
@@ -18,6 +19,9 @@ import java.util.Arrays;
 
 public class HomeController {
 
+    private FisherDTO fisherDTO = new FisherDTO();
+    private String fisherMessage;
+
     @RequestMapping("/")
     public String home(HttpServletRequest request, Model model) {
         String name = request.getParameter("name");
@@ -27,42 +31,51 @@ public class HomeController {
     }
 
     @RequestMapping(value = "/classifier", method = RequestMethod.GET)
-    public String classifierGet(HttpServletRequest request, Model model) {
-
+    public String classifierGet(Model model) {
         model.addAttribute("classifierDTO", new ClassifierDTO());
+        model.addAttribute("fisherDTO", fisherDTO);
+        model.addAttribute("classyficationEnabled", fisherDTO != null ? fisherDTO.getBestFeaturesIndexes() != null : false);
+        model.addAttribute("message", fisherMessage);
         return "classifier";
     }
 
     @RequestMapping(value = "/classifier", method = RequestMethod.POST)
-    public String classifierPost(Model model, ClassifierDTO classifierDTO) {
+    public String classifierPost(Model model, ClassifierDTO classifierDTO, FisherDTO fisherDTO) {
+        if (this.fisherDTO.getBestFeaturesIndexes() == null || this.fisherDTO.getBestFeaturesIndexes().length == 0) {
+            int[] bestFeatures = null;
+            try {
+                FisherSelector fisherSelector = new FisherSelector();
+                bestFeatures = fisherSelector.getBestFeaturesWithSFS(fisherDTO.getBestFeaturesCountFisher());
+            } catch (Exception e) {
+
+            }
+            fisherMessage = "Indexes of best features selected by Fisher: " + Arrays.toString(bestFeatures);
+            this.fisherDTO.setBestFeaturesIndexes(bestFeatures);
+            this.fisherDTO.setBestFeaturesCountFisher(fisherDTO.getBestFeaturesCountFisher());
+            return classifierGet(model);
+        }
 
         String result = null;
         String error = paramsCheck(classifierDTO);
         if (error != null) {
             model.addAttribute("error", error);
-            return "classifier";
+            return classifierGet(model);
         }
 
         paramsCheck(classifierDTO);
         try {
-            FisherSelector fisherSelector = new FisherSelector();
-            //int[] bestFeatures = fisherSelector.getBestFeatures(classifierDTO.getBestFeaturesCount());
-            int[] bestFeatures = fisherSelector.getBestFeaturesWithSFS(classifierDTO.getBestFeaturesCount());
-            for (int i : bestFeatures) {
-                System.out.println("index : " + i);
-            }
-                result="Indexes of best features selected by Fisher: " + Arrays.toString(bestFeatures) + " ";
+
             Classifier classifier = null;
             switch (classifierDTO.getClassifierNo()) {
                 case 1:
-                    classifier = new NNClassifier(classifierDTO.getLearningPerct(), bestFeatures);
+                    classifier = new NNClassifier(classifierDTO.getLearningPerct(), fisherDTO.getBestFeaturesIndexes());
                 case 2:
-                    classifier = new KNNClassifier(classifierDTO.getLearningPerct(), bestFeatures, classifierDTO.getK());
+                    classifier = new KNNClassifier(classifierDTO.getLearningPerct(), fisherDTO.getBestFeaturesIndexes(), classifierDTO.getK());
                 case 3:
-                    classifier = new NMClassifier(classifierDTO.getLearningPerct(), bestFeatures);
+                    classifier = new NMClassifier(classifierDTO.getLearningPerct(), fisherDTO.getBestFeaturesIndexes());
             }
             double pertence = classifier.doClassificationOnClassifyPart() * 100;
-            result += "Result = " + String.valueOf(pertence) + "%";
+            result = "Result = " + String.valueOf(pertence) + "%";
         } catch (Exception e) {
             error = e.getMessage();
             e.printStackTrace();
@@ -72,7 +85,7 @@ public class HomeController {
         } else {
             model.addAttribute("success", result);
         }
-        return "classifier";
+        return classifierGet(model);
     }
 
     private String paramsCheck(ClassifierDTO classifierDTO) {
