@@ -44,7 +44,7 @@ public abstract class Classifier {
         this.selectedFeatures = selectedFeatures;
         sampleList = DataLoader.getFeatureMatrixFromFile();
         Collections.shuffle(sampleList);
-        trainingPartAmount = trainingPartPercent;
+        trainingPartAmount   = trainingPartPercent;
     }
 
     public double doCrossValidation(int k) {
@@ -55,10 +55,10 @@ public abstract class Classifier {
 
         List<List<Sample>> listOfCrossValidationPartsOfsampleList = new ArrayList<List<Sample>>();
         while (sampleList.size() > startIndex) {
-            if (sampleList.size() <= startIndex + crossValidationPartSize + crossValidationPartSize) {
+            if (sampleList.size() < startIndex + crossValidationPartSize + crossValidationPartSize) {
                 listOfCrossValidationPartsOfsampleList.add(sampleList.subList(startIndex, sampleList.size()));
             } else if (sampleList.size() > startIndex + crossValidationPartSize) {
-                listOfCrossValidationPartsOfsampleList.add(sampleList.subList(startIndex, crossValidationPartSize));
+                listOfCrossValidationPartsOfsampleList.add(sampleList.subList(startIndex, startIndex+crossValidationPartSize));
             }
             startIndex += crossValidationPartSize;
         }
@@ -72,10 +72,12 @@ public abstract class Classifier {
                 }
             }
             trainingPart = tPart;
-            log.warn("trainingPart.size()= "+trainingPart.size());
-            pertence += doClassificationOnClassifyPart();
+            log.warn("trainingPart.size()= " + trainingPart.size());
+            double classifyPertence = doClassificationOnClassifyPart();
+            log.warn("For k: " + i + " pertece= " + classifyPertence);
+            pertence += classifyPertence;
         }
 
-        return pertence/k;
+        return pertence / k;
     }
 }

@@ -53,12 +53,15 @@ public class HomeController {
         long start = System.currentTimeMillis();
         switch (classifierDTO.getClassifierNo()) {
             case 1:
+                log.warn("NN");
                 classifier = new NNClassifier(classifierDTO.getLearningPerct(), fisherDTO.getBestFeaturesIndexes());
                 break;
             case 2:
+                log.warn("KNN");
                 classifier = new KNNClassifier(classifierDTO.getLearningPerct(), fisherDTO.getBestFeaturesIndexes(), classifierDTO.getK());
                 break;
             case 3:
+                log.warn("NM");
                 classifier = new NMClassifier(classifierDTO.getLearningPerct(), fisherDTO.getBestFeaturesIndexes());
                 break;
         }
