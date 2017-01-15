@@ -39,6 +39,25 @@ public class HomeController {
         return "classifier";
     }
 
+    @RequestMapping(value = "/crossvalidation", method = RequestMethod.POST)
+    public String postCrossValidation(Model model, ClassifierDTO classifierDTO) throws Exception {
+        Classifier classifier = null;
+        switch (classifierDTO.getClassifierNo()) {
+            case 1:
+                classifier = new NNClassifier(classifierDTO.getLearningPerct(), fisherDTO.getBestFeaturesIndexes());
+                break;
+            case 2:
+                classifier = new KNNClassifier(classifierDTO.getLearningPerct(), fisherDTO.getBestFeaturesIndexes(), classifierDTO.getK());
+                break;
+            case 3:
+                classifier = new NMClassifier(classifierDTO.getLearningPerct(), fisherDTO.getBestFeaturesIndexes());
+                break;
+        }
+        double result = classifier.doCrossValidation(4);
+        model.addAttribute("crossvalidationResult", result);
+        return classifierGet(model);
+    }
+
     @RequestMapping(value = "/classifier", method = RequestMethod.POST)
     public String classifierPost(Model model, ClassifierDTO classifierDTO, FisherDTO fisherDTO) {
         if (this.fisherDTO.getBestFeaturesIndexes() == null || this.fisherDTO.getBestFeaturesIndexes().length == 0) {
