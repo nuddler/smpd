@@ -64,7 +64,7 @@ public class HomeController {
         }
         double result = classifier.doCrossValidation(4);
         long stop = System.currentTimeMillis() - start;
-        model.addAttribute("crossvalidationResult", "Result: "+String.valueOf(result*100) + "%. Time: "+stop+" ms");
+        model.addAttribute("crossvalidationResult", "Crossvalidation: " + classifier.getClass().getSimpleName() +" Result: "+String.valueOf(result*100) + "%. Time: "+stop+" ms");
         return classifierGet(model);
     }
 
