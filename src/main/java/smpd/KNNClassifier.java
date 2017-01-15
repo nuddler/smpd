@@ -18,14 +18,14 @@ public class KNNClassifier extends Classifier {
         int class1 = 0, class2 = 0;
 
         for (Sample sample1 : nearestNeighborsOfSample) {
-            if(sample1.getClassName().equals(Sample.ClassName.ACER)) {
+            if(sample1.getClassName().equals(Sample.ClassName.A)) {
                 class1++;
-            } else if (sample1.getClassName().equals(Sample.ClassName.QUERCUS)) {
+            } else if (sample1.getClassName().equals(Sample.ClassName.B)) {
                 class2++;
             }
         }
 
-        return class1 > class2 ? Sample.ClassName.ACER : Sample.ClassName.QUERCUS;
+        return class1 > class2 ? Sample.ClassName.A : Sample.ClassName.B;
     }
 
     private List<Sample> getNearestNeighborsOfSample(Sample sample) {

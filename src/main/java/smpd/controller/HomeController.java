@@ -1,5 +1,6 @@
 package smpd.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -16,7 +17,7 @@ import java.util.Arrays;
  * Created by Maciej on 2016-12-27.
  */
 @Controller
-
+@Slf4j
 public class HomeController {
 
     private FisherDTO fisherDTO = new FisherDTO();
@@ -31,6 +32,13 @@ public class HomeController {
     }
 
     @RequestMapping(value = "/classifier", method = RequestMethod.GET)
+    public String get(Model model) {
+        fisherDTO = new FisherDTO();
+        fisherMessage = null;
+
+        return classifierGet(model);
+    }
+
     public String classifierGet(Model model) {
         model.addAttribute("classifierDTO", new ClassifierDTO());
         model.addAttribute("fisherDTO", fisherDTO);
@@ -42,14 +50,27 @@ public class HomeController {
     @RequestMapping(value = "/classifier", method = RequestMethod.POST)
     public String classifierPost(Model model, ClassifierDTO classifierDTO, FisherDTO fisherDTO) {
         if (this.fisherDTO.getBestFeaturesIndexes() == null || this.fisherDTO.getBestFeaturesIndexes().length == 0) {
+            String sfsString = "";
             int[] bestFeatures = null;
+            long stop = 0;
             try {
                 FisherSelector fisherSelector = new FisherSelector();
-                bestFeatures = fisherSelector.getBestFeaturesWithSFS(fisherDTO.getBestFeaturesCountFisher());
+                if (fisherDTO.isSfs()) {
+                    long start = System.currentTimeMillis();
+                    bestFeatures = fisherSelector.getBestFeaturesWithSFS(fisherDTO.getBestFeaturesCountFisher());
+                    stop = System.currentTimeMillis() - start;
+                    sfsString = " with SFS ";
+                    log.warn("SFS");
+                } else {
+                    long start = System.currentTimeMillis();
+                    bestFeatures = fisherSelector.getBestFeatures(fisherDTO.getBestFeaturesCountFisher());
+                    stop = System.currentTimeMillis() - start;
+                    log.warn("No SFS");
+                }
             } catch (Exception e) {
 
             }
-            fisherMessage = "Indexes of best features selected by Fisher: " + Arrays.toString(bestFeatures);
+            fisherMessage = "Indexes of best features selected by Fisher: " + Arrays.toString(bestFeatures) + sfsString + " in time: " + stop + " millisecond";
             this.fisherDTO.setBestFeaturesIndexes(bestFeatures);
             this.fisherDTO.setBestFeaturesCountFisher(fisherDTO.getBestFeaturesCountFisher());
             return classifierGet(model);
@@ -64,18 +85,27 @@ public class HomeController {
 
         paramsCheck(classifierDTO);
         try {
-
+            String k = "";
             Classifier classifier = null;
             switch (classifierDTO.getClassifierNo()) {
                 case 1:
-                    classifier = new NNClassifier(classifierDTO.getLearningPerct(), fisherDTO.getBestFeaturesIndexes());
+                    classifier = new NNClassifier(classifierDTO.getLearningPerct(), this.fisherDTO.getBestFeaturesIndexes());
+                    log.warn("NN");
+                    break;
                 case 2:
-                    classifier = new KNNClassifier(classifierDTO.getLearningPerct(), fisherDTO.getBestFeaturesIndexes(), classifierDTO.getK());
+                    classifier = new KNNClassifier(classifierDTO.getLearningPerct(), this.fisherDTO.getBestFeaturesIndexes(), classifierDTO.getK());
+                    k = " with k=" + classifierDTO.getK();
+                    log.warn("KNN");
+                    break;
                 case 3:
-                    classifier = new NMClassifier(classifierDTO.getLearningPerct(), fisherDTO.getBestFeaturesIndexes());
+                    classifier = new NMClassifier(classifierDTO.getLearningPerct(), this.fisherDTO.getBestFeaturesIndexes());
+                    log.warn("NM");
+                    break;
             }
+            long start = System.currentTimeMillis();
             double pertence = classifier.doClassificationOnClassifyPart() * 100;
-            result = "Result = " + String.valueOf(pertence) + "%";
+            long stop = System.currentTimeMillis() - start;
+            result = classifier.getClass().getSimpleName() + k + " result = " + String.valueOf(pertence) + "% in time " + stop + " millisecond";
         } catch (Exception e) {
             error = e.getMessage();
             e.printStackTrace();

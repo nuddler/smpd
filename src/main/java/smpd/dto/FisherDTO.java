@@ -9,4 +9,5 @@ import lombok.Data;
 public class FisherDTO {
     private int bestFeaturesCountFisher;
     private int[] bestFeaturesIndexes;
+    private boolean sfs;
 }
