@@ -62,7 +62,7 @@ public class HomeController {
                 break;
         }
         double result = classifier.doCrossValidation(4);
-        model.addAttribute("crossvalidationResult", result);
+        model.addAttribute("crossvalidationResult", "Result: "+String.valueOf(result*100) + "%");
         return classifierGet(model);
     }
 
