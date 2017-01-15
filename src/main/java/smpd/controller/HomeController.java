@@ -50,6 +50,7 @@ public class HomeController {
     @RequestMapping(value = "/crossvalidation", method = RequestMethod.POST)
     public String postCrossValidation(Model model, ClassifierDTO classifierDTO) throws Exception {
         Classifier classifier = null;
+        long start = System.currentTimeMillis();
         switch (classifierDTO.getClassifierNo()) {
             case 1:
                 classifier = new NNClassifier(classifierDTO.getLearningPerct(), fisherDTO.getBestFeaturesIndexes());
@@ -62,7 +63,8 @@ public class HomeController {
                 break;
         }
         double result = classifier.doCrossValidation(4);
-        model.addAttribute("crossvalidationResult", "Result: "+String.valueOf(result*100) + "%");
+        long stop = System.currentTimeMillis() - start;
+        model.addAttribute("crossvalidationResult", "Result: "+String.valueOf(result*100) + "%. Time: "+stop+" ms");
         return classifierGet(model);
     }
 
