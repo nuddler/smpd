@@ -1,5 +1,7 @@
 package smpd;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,6 +11,7 @@ import java.util.List;
 /**
  * Created by bdlugosz on 19.12.16.
  */
+@Slf4j
 public abstract class Classifier {
 
     private final int trainingPartAmount;
@@ -69,6 +72,7 @@ public abstract class Classifier {
                 }
             }
             trainingPart = tPart;
+            log.warn("trainingPart.size()= "+trainingPart.size());
             pertence += doClassificationOnClassifyPart();
         }
 

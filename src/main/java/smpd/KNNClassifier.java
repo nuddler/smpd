@@ -1,5 +1,6 @@
 package smpd;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.FileNotFoundException;
@@ -9,6 +10,7 @@ import java.util.List;
 /**
  * Created by bdlugosz on 19.12.16.
  */
+@Slf4j
 public class KNNClassifier extends Classifier {
     private int k;
 
@@ -18,7 +20,7 @@ public class KNNClassifier extends Classifier {
         int class1 = 0, class2 = 0;
 
         for (Sample sample1 : nearestNeighborsOfSample) {
-            if(sample1.getClassName().equals(Sample.ClassName.A)) {
+            if (sample1.getClassName().equals(Sample.ClassName.A)) {
                 class1++;
             } else if (sample1.getClassName().equals(Sample.ClassName.B)) {
                 class2++;
@@ -30,7 +32,12 @@ public class KNNClassifier extends Classifier {
 
     private List<Sample> getNearestNeighborsOfSample(Sample sample) {
         Collections.sort(trainingPart, new EuclideanComparator(sample, selectedFeatures));
-        return trainingPart.subList(0, k);
+        if (k >= trainingPart.size()) {
+            //log.error("k=" + k + " trainingPart.size()= " + trainingPart.size());
+            return trainingPart;
+        } else {
+            return trainingPart.subList(0, k);
+        }
     }
 
     public KNNClassifier(int trainingPartPercent, int[] selectedFeatures, int k) throws FileNotFoundException {
