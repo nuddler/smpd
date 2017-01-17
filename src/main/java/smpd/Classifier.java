@@ -43,7 +43,6 @@ public abstract class Classifier {
     public Classifier(int trainingPartPercent, int[] selectedFeatures) throws FileNotFoundException {
         this.selectedFeatures = selectedFeatures;
         sampleList = DataLoader.getFeatureMatrixFromFile();
-        Collections.shuffle(sampleList);
         trainingPartAmount   = trainingPartPercent;
     }
 

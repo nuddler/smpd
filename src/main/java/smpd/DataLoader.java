@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -13,7 +14,14 @@ import java.util.Scanner;
  * Created by nuddler on 23.11.16.
  */
 public class DataLoader {
+
+    private static List<Sample> samples;
+
     public static List<Sample> getFeatureMatrixFromFile() throws FileNotFoundException {
+        if(samples != null) {
+            return samples;
+        }
+
         File file = new File("resource/input.txt");
         Scanner br = null;
 
@@ -30,7 +38,7 @@ public class DataLoader {
             }
         }
 
-        List<Sample> samples = new ArrayList<Sample>();
+        samples = new ArrayList<Sample>();
         for (ArrayList<String> arrayList : arrayLists) {
             Sample sample = new Sample();
             sample.setClassName(arrayList.get(0));
@@ -39,6 +47,7 @@ public class DataLoader {
             }
             samples.add(sample);
         }
+        Collections.shuffle(samples);
         return samples;
     }
 }
